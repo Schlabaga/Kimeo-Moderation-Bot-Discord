@@ -1,4 +1,3 @@
-
 import discord
 from discord import app_commands, ui
 from discord.ui import View, Select
