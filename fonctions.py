@@ -1,4 +1,4 @@
-from config import dbuser, dbserver, dbbot
+from configuration import dbuser, dbserver, dbbot
 
 def getUserInfos(arg, userID):
     #arg : age / date_creation / insta / prenom / sexe / userName / public / selfie / likes / likeurs / situation / villeName / villeID / posted / presentation

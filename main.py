@@ -1,15 +1,13 @@
-from config import TOKEN
+from configuration import TOKEN, bot, dbuser, dbserver
 import discord
 from discord import app_commands
 from discord.ext import commands
 import asyncio
 from classes import blacklistPanel
 import datetime as dt
-from config import dbuser, dbserver
 import datetime
 
 EmbedColor=discord.Color.from_rgb(0,0,0)
-bot = commands.Bot(command_prefix="+",intents=discord.Intents.all())
 
 
 async def status():

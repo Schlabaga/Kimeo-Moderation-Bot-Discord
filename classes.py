@@ -4,10 +4,9 @@ from discord import app_commands, ui
 from discord.ui import View, Select
 from discord.ext import commands
 import discord_emoji
-import pymongo
 import datetime as dt
 from fonctions import getServerInfos
-from config import MongoClient
+from configuration import MongoClient
 bot = commands.Bot(command_prefix="+",intents=discord.Intents.all())
 
 

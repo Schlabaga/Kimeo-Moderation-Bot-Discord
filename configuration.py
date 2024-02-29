@@ -16,4 +16,3 @@ dbuser = MongoClient.userconfig
 dbbot = MongoClient.botconfig
 dbserver = MongoClient.serverconfig
 
-bot = commands.Bot(command_prefix="+",intents=discord.Intents.all())
