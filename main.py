@@ -1,14 +1,16 @@
-from configuration import TOKEN, bot, dbuser, dbserver
+from config import bot, TOKEN
 import discord
 from discord import app_commands
 from discord.ext import commands
 import asyncio
 from classes import blacklistPanel
 import datetime as dt
+from config import dbuser, dbserver
 import datetime
 
-EmbedColor=discord.Color.from_rgb(0,0,0)
 
+
+EmbedColor=discord.Color.from_rgb(0,0,0)
 
 async def status():
   while True:
@@ -16,6 +18,7 @@ async def status():
     await asyncio.sleep(10)
     await bot.change_presence(activity=discord.Streaming(name="Rejoins mes serveurs partenaires!", url="https://www.twitch.tv/minoristream"))
     await asyncio.sleep(10)
+
 
 
 class Bot(commands.Bot):
@@ -40,7 +43,6 @@ class Bot(commands.Bot):
         try:
             
             synced= await bot.tree.sync()
-
             print(f"Synchronisé {len(synced)} commande(s)")
             print("--------------------------------------------")
             
@@ -53,7 +55,6 @@ class Bot(commands.Bot):
 
         except Exception as e:
           print(e)
-
         await bot.loop.create_task(status())
     
 bot = Bot()
@@ -73,14 +74,11 @@ def getServerInfos(arg= None, serverID = 993849107678515230):
 
       except KeyError as e:
           
-          print(str(e))
-
+        print(str(e))
   else:
 
-      return dict
+    return dict
   
-
-
 
 
 
@@ -349,6 +347,123 @@ async def purge(interaction: discord.Interaction, nombre: int):
 
 
 
+
+
+@bot.tree.command(name="catlock", description="Lock tous les salons d'une catégorie")
+@app_commands.checks.has_permissions(administrator=True)
+async def catlock(interaction: discord.Interaction, category: discord.CategoryChannel):
+   
+  guild = interaction.guild
+  roleMembre = guild.get_role(getServerInfos("rolebienvenue"))
+
+  await interaction.response.defer(ephemeral=True)
+
+  if not roleMembre:
+
+    await interaction.followup.send(f"Merci de définir un role membre pour le serveur d\'abord.", ephemeral=True)
+    return
+  
+  else:
+    
+    await interaction.followup.send(f"Les salons sont en train d'être mis à jour... <#{category.id}>", ephemeral=True)
+
+    for salon in category.text_channels:
+      await salon.set_permissions(target=roleMembre, send_messages = False, view_channel = True, read_message_history= True)
+
+  await interaction.followup.send(f"Les salons de la catégorie {category.mention} ont bien été lock.", ephemeral = True)
+
+
+
+
+@bot.tree.command(name="catunlock", description="Unlock tous les salons d'une catégorie")
+@app_commands.checks.has_permissions(administrator=True)
+async def catunlock(interaction: discord.Interaction, category: discord.CategoryChannel):
+   
+  guild = interaction.guild
+  roleMembre = guild.get_role(getServerInfos("rolebienvenue"))
+
+  await interaction.response.defer(ephemeral=True)
+
+  if not roleMembre:
+
+    await interaction.followup.send(f"Merci de définir un role membre pour le serveur d\'abord.", ephemeral=True)
+    return
+  
+  else:
+    await category.set_permissions(target=roleMembre, send_messages = True, view_channel = True, read_messages= True, read_message_history = True)
+    await interaction.followup.send(f"Les salons sont en train d'être mis à jour... <#{category.id}>", ephemeral=True)
+
+    for salon in category.text_channels:
+
+      await salon.edit(sync_permissions=True)
+
+  await interaction.followup.send(f"Les salons de la catégorie {category.mention} ont bien été unlock.", ephemeral = True)
+
+
+
+
+  
+@bot.tree.command(name="cathide", description="Cache tous les salons d'une catégorie")
+@app_commands.checks.has_permissions(administrator=True)
+async def cathide(interaction: discord.Interaction, category: discord.CategoryChannel):
+   
+  guild = interaction.guild
+  roleMembre = guild.get_role(getServerInfos("rolebienvenue"))
+
+  await interaction.response.defer(ephemeral=True)
+
+  if not roleMembre:
+
+    await interaction.followup.send(f"Merci de définir un role membre pour le serveur d\'abord.", ephemeral=True)
+    return
+  
+  else:
+    
+    await interaction.followup.send(f"Les salons sont en train d'être mis à jour... <#{category.id}>", ephemeral=True)
+
+    for salon in category.text_channels:
+      await salon.set_permissions(target=roleMembre, view_channel = False)
+
+  await interaction.followup.send(f"Les salons de la catégorie {category.mention} ont bien été cachés.", ephemeral = True)
+
+
+
+
+  
+@bot.tree.command(name="catunhide", description="Cache tous les salons d'une catégorie")
+@app_commands.checks.has_permissions(administrator=True)
+async def catunhide(interaction: discord.Interaction, category: discord.CategoryChannel):
+   
+  guild = interaction.guild
+  roleMembre = guild.get_role(getServerInfos("rolebienvenue"))
+
+  await interaction.response.defer(ephemeral=True)
+
+  if not roleMembre:
+
+    await interaction.followup.send(f"Merci de définir un role membre pour le serveur d\'abord.", ephemeral=True)
+    return
+  
+  else:
+    
+    await interaction.followup.send(f"Les salons sont en train d'être mis à jour... <#{category.id}>", ephemeral=True)
+
+    overwrite = discord.PermissionOverwrite()
+    overwrite.view_channel = True
+    overwrite.read_message_history = True
+    overwrite.read_messages = True
+    
+    for salon in category.text_channels:
+
+      await salon.set_permissions(target=roleMembre, overwrite=overwrite)
+
+  await interaction.followup.send(f"Les salons de la catégorie {category.mention} sont maintenant visibles pour les membres.", ephemeral = True)
+
+
+
+
+
+
 @bot.tree.command(name="rolebienvenue", description="Active / désactive l'ajout de rôle auto")
 @app_commands.checks.has_permissions(administrator=True)
 async def rolebienvenue(interaction: discord.Interaction):
@@ -580,7 +695,7 @@ async def suppr(i: discord.Interaction, categorie: discord.CategoryChannel):
     await asyncio.sleep(0.20)
   await categorie.delete()
 
-  await i.followup.send_message("Les salons de la catégorie `{}` ont bien été supprimés".format(categorie.name), ephemeral=True)
+  await i.send_message("Les salons de la catégorie `{}` ont bien été supprimés".format(categorie.name))
 
 
 @bot.tree.command(name="affiche", description="Affiche diverses informations")
