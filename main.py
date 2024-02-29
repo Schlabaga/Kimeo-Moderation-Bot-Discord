@@ -1,4 +1,4 @@
-from config import bot, TOKEN
+from config import TOKEN
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -9,6 +9,8 @@ from config import dbuser, dbserver
 import datetime
 
 EmbedColor=discord.Color.from_rgb(0,0,0)
+bot = commands.Bot(command_prefix="+",intents=discord.Intents.all())
+
 
 async def status():
   while True:
@@ -16,7 +18,6 @@ async def status():
     await asyncio.sleep(10)
     await bot.change_presence(activity=discord.Streaming(name="Rejoins mes serveurs partenaires!", url="https://www.twitch.tv/minoristream"))
     await asyncio.sleep(10)
-
 
 
 class Bot(commands.Bot):
