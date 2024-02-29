@@ -7,6 +7,8 @@ bot = commands.Bot(command_prefix="+",intents=discord.Intents.all())
 
 MONGO_CLIENT_KEY = os.environ.get('MONGO_CLIENT_KEY')
 TOKEN = os.environ.get('TOKEN')
+MONGO_CLIENT_KEY = os.environ.get('MONGO_CLIENT_KEY')
+TOKEN = os.environ.get('TOKEN')
 
 MongoClient = pymongo.MongoClient(MONGO_CLIENT_KEY)
 
