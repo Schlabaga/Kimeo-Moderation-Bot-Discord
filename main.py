@@ -85,6 +85,11 @@ def getServerInfos(arg= None, serverID = 993849107678515230):
 @bot.event
 async def on_member_join(member: discord.Member):
 
+  print(member.name)
+
+  if member.bot:
+    return
+  
   guild = member.guild
   ServerDataBase = dbserver.server.find_one({"serverID":guild.id})
 
@@ -699,7 +704,7 @@ async def suppr(i: discord.Interaction, categorie: discord.CategoryChannel):
 
 
 @bot.tree.command(name="affiche", description="Affiche diverses informations")
-@commands.has_permissions(administrator=True)
+@app_commands.checks.has_permissions(administrator=True)
 @app_commands.choices(types=[
     app_commands.Choice(name="Tarifs", value="tarifs"),
     app_commands.Choice(name="Roles", value="roles"),

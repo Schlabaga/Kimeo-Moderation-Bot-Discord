@@ -6,6 +6,7 @@ import os
 MONGO_CLIENT_KEY = os.environ.get('MONGO_CLIENT_KEY')
 TOKEN = os.environ.get('TOKEN')
 
+
 MongoClient = pymongo.MongoClient(MONGO_CLIENT_KEY)
 
 dbuser = MongoClient.userconfig
